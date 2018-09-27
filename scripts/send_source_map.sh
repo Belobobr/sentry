@@ -5,4 +5,10 @@ export SENTRY_ORG=tripeverywhere
 export SENTRY_PROJECT=react
 VERSION=$(sentry-cli releases propose-version)
 
-sentry-cli releases -o $SENTRY_ORG -p $SENTRY_PROJECT files $VERSION upload-sourcemaps ../dist
+pwd
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+cd "$parent_path"
+pwd
+
+sentry-cli releases -o $SENTRY_ORG -p $SENTRY_PROJECT files $VERSION upload-sourcemaps ./../dist/

@@ -7,7 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.production.js",
-    "build_send_files_to_setnry": "chmod +x send_coomit_info.sh && ./scripts/send_source_map.sh",
+    "sentry_update_release": "npm run sentry_update_commit_info && npm run sentry_update_source_map",
+    "sentry_update_commit_info": "chmod +x ./scripts/send_commit_info.sh && ./scripts/send_commit_info.sh",
+    "sentry_update_source_map": "chmod +x ./scripts/send_source_map.sh && ./scripts/send_source_map.sh",
+    "last_commit_hash_to_environment_variable": "git rev-parse HEAD",
     "start": "webpack-dev-server --open --config webpack.development.js",
     "server": "node server.js"
   },
