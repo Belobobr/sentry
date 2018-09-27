@@ -32,8 +32,9 @@ module.exports = {
         ],
     },
     output: {
-        filename: 'bundle.js',
-        chunkFilename: '[name].bundle.js',
+        filename: '[name].js',
+        chunkFilename: '[name].js',
+        sourceMapFilename: "[name].js.map",
         path: path.resolve(__dirname, 'dist')
     }
 };

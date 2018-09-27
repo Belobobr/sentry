@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.production.js",
+    "build_send_files_to_setnry": "chmod +x send_coomit_info.sh && ./scripts/send_source_map.sh",
     "start": "webpack-dev-server --open --config webpack.development.js",
     "server": "node server.js"
   },
@@ -18,6 +19,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@sentry/browser": "^4.0.5",
+    "@sentry/webpack-plugin": "^1.5.2",
     "await-delay": "^1.0.0",
     "babel-loader": "^8.0.2",
     "lodash": "^4.17.11",

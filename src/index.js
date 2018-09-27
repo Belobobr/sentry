@@ -5,11 +5,10 @@ import * as Sentry from '@sentry/browser';
 
 import ErrorBoundary from './ErrorBoundary';
 
-//TODO is it secure?
-const packageInfo = require('./../package.json');
+// import {getRelease} from '../utils';
 
 //TODO check issue. If sentry does't configured warning not shown.
-Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: `${packageInfo.name}@${packageInfo.version}` });
+Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: '1ff273e73cb7b7d9e9060d78069c40ae0044f488' });
 
 class App extends React.Component {
     constructor(props) {

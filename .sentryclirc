@@ -1,0 +1,6 @@
+[defaults]
+org = tripeverywhere
+project = react
+
+[auth]
+token = b2969cb64a6245e7b8968e3a71d2be9ce75f62846ad44d019bfa06801cb49439
