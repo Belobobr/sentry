@@ -3,10 +3,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import delay from 'await-delay';
-import BigComponent from './BigComponent';
 import * as Sentry from '@sentry/browser';
+import Select from 'react-select';
 
 import ErrorBoundary from './ErrorBoundary';
+import BigComponent from './BigComponent';
 
 // import {getRelease} from '../utils';
 
@@ -26,8 +27,8 @@ class App extends React.Component<AppProps, AppState> {
     constructor(props) {
         super(props);
         this.state = {
-            options: [1,2,3,4],
-            selectedOption: 1
+            options: [{value: 1, label: '1'}, {value: 2, label: '2'}, {value: 3, label: '3'}, {value: 4, label: '4'}],
+            selectedOption: null
         }
         this.onOptionSelected = this.onOptionSelected.bind(this);
         this.renderOptions = this.renderOptions.bind(this);
@@ -39,6 +40,7 @@ class App extends React.Component<AppProps, AppState> {
 
     render() {
         const { Body } = this;
+        const { options, selectedOption } = this.state;
 
         const error = undefined;
 
@@ -70,13 +72,13 @@ class App extends React.Component<AppProps, AppState> {
                 </div>
                 <div>
                     <label htmlFor="mood">Choose your mood:</label>
-                    <RowSelector
-                        options={this.state.options}
-                        selectedOption={this.state.selectedOption}
-                        onOptionSelected={this.onOptionSelected}
+                    <Select
+                        value={selectedOption}
+                        onChange={this.onOptionSelected}
+                        options={options}
                     />
                     <div>
-                        {this.renderOptions()}
+                        {this.state.selectedOption !== null && this.renderOptions()}
                     </div>
                 </div>
             </form>
@@ -86,7 +88,7 @@ class App extends React.Component<AppProps, AppState> {
     renderOptions() {
         let options = [];
 
-        for (let i = 0; i < this.state.selectedOption; i++) {
+        for (let i = 0; i < this.state.selectedOption.value; i++) {
             options.push(<div><button>{i + 1}</button></div>);
         }
 
@@ -97,9 +99,9 @@ class App extends React.Component<AppProps, AppState> {
 
     }
 
-    onOptionSelected(value) {
+    onOptionSelected(selectedOption) {
         this.setState({
-            selectedOption: value
+            selectedOption
         })
     }
 }
