@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import delay from 'await-delay';
 import * as Sentry from '@sentry/browser';
 import Select from 'react-select';
+import {Typeahead} from 'react-bootstrap-typeahead';
 
 import ErrorBoundary from './ErrorBoundary';
 import BigComponent from './BigComponent';
@@ -19,15 +20,15 @@ type AppProps = {
 }
 
 type AppState = {
-    options: Array<number>,
-    selectedOption: number,
+    options: Array<string>,
+    selectedOption: string,
 }
 
 class App extends React.Component<AppProps, AppState> {
     constructor(props) {
         super(props);
         this.state = {
-            options: [{value: 1, label: '1'}, {value: 2, label: '2'}, {value: 3, label: '3'}, {value: 4, label: '4'}],
+            options: [{name: "1", label: '1'}, {name: "2", label: '2'}, {name: "3", label: '3'}, {name: "4", label: '4'}],
             selectedOption: null
         }
         this.onOptionSelected = this.onOptionSelected.bind(this);
@@ -72,10 +73,12 @@ class App extends React.Component<AppProps, AppState> {
                 </div>
                 <div>
                     <label htmlFor="mood">Choose your mood:</label>
-                    <Select
-                        value={selectedOption}
-                        onChange={this.onOptionSelected}
+                    <Typeahead
+                        labelKey="name"
                         options={options}
+                        placeholder="Choose a state..."
+                        selected={this.state.selectedOption !== null ? [this.state.selectedOption] : null}
+                        onChange={this.onOptionSelected}
                     />
                     <div>
                         {this.state.selectedOption !== null && this.renderOptions()}
@@ -88,7 +91,7 @@ class App extends React.Component<AppProps, AppState> {
     renderOptions() {
         let options = [];
 
-        for (let i = 0; i < this.state.selectedOption.value; i++) {
+        for (let i = 0; i < this.state.selectedOption.name; i++) {
             options.push(<div><button>{i + 1}</button></div>);
         }
 
@@ -101,15 +104,15 @@ class App extends React.Component<AppProps, AppState> {
 
     onOptionSelected(selectedOption) {
         this.setState({
-            selectedOption
+            selectedOption: selectedOption.length > 0 ? selectedOption[0] : null
         })
     }
 }
 
 type RowSelectorProps = {
-    options: Array<number>,
-    selectedOption: number,
-    onOptionSelected: (number) => void
+    options: Array<string>,
+    selectedOption: string,
+    onOptionSelected: (string) => void
 }
 
 class RowSelector extends React.Component {
