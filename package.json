@@ -27,13 +27,14 @@
     "await-delay": "^1.0.0",
     "babel-loader": "^8.0.2",
     "lodash": "^4.17.11",
+    "prop-types": "^15.5.8",
     "react": "^16.4.2",
     "react-bootstrap-typeahead": "^3.2.3",
     "react-dom": "^16.4.2",
-    "react-select": "^2.0.0",
-    "prop-types": "^15.5.8"
+    "react-select": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",

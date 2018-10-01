@@ -6,12 +6,15 @@ import PropTypes from 'prop-types';
 import delay from 'await-delay';
 import * as Sentry from '@sentry/browser';
 import Select from 'react-select';
-import {Typeahead, AsyncTypeahead} from 'react-bootstrap-typeahead';
+import {Typeahead} from 'react-bootstrap-typeahead';
+import AsyncTypeahead from './AsyncTypeahead';
 
 import ErrorBoundary from './ErrorBoundary';
 import BigComponent from './BigComponent';
 
 // import {getRelease} from '../utils';
+
+//const options = [{name: "1", label: '1'}, {name: "2", label: '2'}, {name: "3", label: '3'}, {name: "4", label: '4'}]
 
 //TODO check issue. If sentry does't configured warning not shown.
 Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: '12414ff194fc36dc4fa65d8d4ffdd13d1e374115' });
@@ -41,7 +44,8 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     async componentDidMount() {
-        await delay(2000);
+        //search with empty string
+        this._handleSearch();
     }
 
     render() {
@@ -80,12 +84,13 @@ class App extends React.Component<AppProps, AppState> {
                     <label htmlFor="mood">Choose your mood:</label>
                     <AsyncTypeahead
                         {...this.state}
-                        labelKey="login"
-                        minLength={3}
+                        onFocus={this._handleFocus}
+                        minLength={0}
+                        labelKey="name"
                         onSearch={this._handleSearch}
                         placeholder="Search for a Github user..."
                         renderMenuItemChildren={(option, props) => (
-                            <GithubMenuItem key={option.id} user={option} />
+                            <div key={option.name}>{option.label}</div>
                         )}
                     />
                     <div>
@@ -112,6 +117,14 @@ class App extends React.Component<AppProps, AppState> {
         this.setState({
             selectedOption: selectedOption.length > 0 ? selectedOption[0] : null
         })
+    }
+
+    _handleFocus() {
+        //TODO lazy load, when focus && nothing in input && no options  - make request
+
+        // if (this.state.options.length !== 0) {
+        //     return;
+        // }
     }
 
     _handleSearch(query) {
@@ -150,18 +163,14 @@ class App extends React.Component<AppProps, AppState> {
 //     }
 // }
 
-const SEARCH_URI = 'https://api.github.com/search/users';
+const SEARCH_URI = 'https://belobobr.github.io/sentry/numbers.json';
 
 function makeAndHandleRequest(query, page = 1) {
-    return fetch(`${SEARCH_URI}?q=${query}+in:login&page=${page}&per_page=50`)
+    return fetch(SEARCH_URI)
         .then((resp) => resp.json())
-        .then(({items, total_count}) => {
-            const options = items.map((i) => ({
-                avatar_url: i.avatar_url,
-                id: i.id,
-                login: i.login,
-            }));
-            return {options, total_count};
+        .then((numbers) => {
+            debugger
+            return {options: numbers, total_count: numbers.length};
         });
 }
 
