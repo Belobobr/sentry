@@ -2,10 +2,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import delay from 'await-delay';
 import * as Sentry from '@sentry/browser';
 import Select from 'react-select';
-import {Typeahead} from 'react-bootstrap-typeahead';
+import {Typeahead, AsyncTypeahead} from 'react-bootstrap-typeahead';
 
 import ErrorBoundary from './ErrorBoundary';
 import BigComponent from './BigComponent';
@@ -28,11 +29,15 @@ class App extends React.Component<AppProps, AppState> {
     constructor(props) {
         super(props);
         this.state = {
-            options: [{name: "1", label: '1'}, {name: "2", label: '2'}, {name: "3", label: '3'}, {name: "4", label: '4'}],
-            selectedOption: null
+            allowNew: false,
+            isLoading: false,
+            multiple: false,
+            options: [],
+            selectedOption: []
         }
-        this.onOptionSelected = this.onOptionSelected.bind(this);
-        this.renderOptions = this.renderOptions.bind(this);
+        this._onOptionSelected = this._onOptionSelected.bind(this);
+        this._renderOptions = this._renderOptions.bind(this);
+        this._handleSearch = this._handleSearch.bind(this);
     }
 
     async componentDidMount() {
@@ -73,22 +78,25 @@ class App extends React.Component<AppProps, AppState> {
                 </div>
                 <div>
                     <label htmlFor="mood">Choose your mood:</label>
-                    <Typeahead
-                        labelKey="name"
-                        options={options}
-                        placeholder="Choose a state..."
-                        selected={this.state.selectedOption !== null ? [this.state.selectedOption] : null}
-                        onChange={this.onOptionSelected}
+                    <AsyncTypeahead
+                        {...this.state}
+                        labelKey="login"
+                        minLength={3}
+                        onSearch={this._handleSearch}
+                        placeholder="Search for a Github user..."
+                        renderMenuItemChildren={(option, props) => (
+                            <GithubMenuItem key={option.id} user={option} />
+                        )}
                     />
                     <div>
-                        {this.state.selectedOption !== null && this.renderOptions()}
+                        {this.state.selectedOption !== null && this._renderOptions()}
                     </div>
                 </div>
             </form>
         </div>
     }
 
-    renderOptions() {
+    _renderOptions() {
         let options = [];
 
         for (let i = 0; i < this.state.selectedOption.name; i++) {
@@ -98,40 +106,88 @@ class App extends React.Component<AppProps, AppState> {
         return <div>
             {options}
         </div>
-
-
     }
 
-    onOptionSelected(selectedOption) {
+    _onOptionSelected(selectedOption) {
         this.setState({
             selectedOption: selectedOption.length > 0 ? selectedOption[0] : null
         })
     }
-}
 
-type RowSelectorProps = {
-    options: Array<string>,
-    selectedOption: string,
-    onOptionSelected: (string) => void
-}
-
-class RowSelector extends React.Component {
-    constructor(props){
-        super(props);
-    }
-
-    render() {
-        const { options, selectedOption, onOptionSelected} = this.props;
-
-        return <select id="mood" name="mood" onChange={(event) => onOptionSelected(event.target.value)}>
-            {
-                options.map((option) => {
-                    return  <option selected={option === selectedOption}>{option}</option>
-                 })
-            }
-        </select>
+    _handleSearch(query) {
+        this.setState({isLoading: true});
+        makeAndHandleRequest(query)
+            .then(({options}) => {
+                this.setState({
+                    isLoading: false,
+                    options,
+                });
+            });
     }
 }
+
+// type RowSelectorProps = {
+//     options: Array<string>,
+//     selectedOption: string,
+//     _onOptionSelected: (string) => void
+// }
+//
+// class RowSelector extends React.Component {
+//     constructor(props){
+//         super(props);
+//     }
+//
+//     render() {
+//         const { options, selectedOption, _onOptionSelected} = this.props;
+//
+//         return <select id="mood" name="mood" onChange={(event) => _onOptionSelected(event.target.value)}>
+//             {
+//                 options.map((option) => {
+//                     return  <option selected={option === selectedOption}>{option}</option>
+//                  })
+//             }
+//         </select>
+//     }
+// }
+
+const SEARCH_URI = 'https://api.github.com/search/users';
+
+function makeAndHandleRequest(query, page = 1) {
+    return fetch(`${SEARCH_URI}?q=${query}+in:login&page=${page}&per_page=50`)
+        .then((resp) => resp.json())
+        .then(({items, total_count}) => {
+            const options = items.map((i) => ({
+                avatar_url: i.avatar_url,
+                id: i.id,
+                login: i.login,
+            }));
+            return {options, total_count};
+        });
+}
+
+const GithubMenuItem = ({user}) => (
+    <div>
+        <img
+            alt={user.login}
+            src={user.avatar_url}
+            style={{
+                height: '24px',
+                marginRight: '10px',
+                width: '24px',
+            }}
+        />
+        <span>{user.login}</span>
+    </div>
+);
+
+GithubMenuItem.propTypes = {
+    user: PropTypes.shape({
+        avatar_url: PropTypes.string.isRequired,
+        login: PropTypes.string.isRequired,
+    }).isRequired,
+};
+
+export default GithubMenuItem;
 
 const body = document.getElementById('root');
 if (body) {
