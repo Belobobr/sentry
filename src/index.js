@@ -92,9 +92,10 @@ class App extends React.Component<AppProps, AppState> {
                         renderMenuItemChildren={(option, props) => (
                             <div key={option.name}>{option.label}</div>
                         )}
+                        onChange={this._onOptionSelected}
                     />
                     <div>
-                        {this.state.selectedOption !== null && this._renderOptions()}
+                        {this._renderOptions()}
                     </div>
                 </div>
             </form>
@@ -104,7 +105,11 @@ class App extends React.Component<AppProps, AppState> {
     _renderOptions() {
         let options = [];
 
-        for (let i = 0; i < this.state.selectedOption.name; i++) {
+        if (this.state.selectedOption.length < 1) {
+            return
+        }
+
+        for (let i = 0; i < this.state.selectedOption[0].name; i++) {
             options.push(<div><button>{i + 1}</button></div>);
         }
 
@@ -115,7 +120,7 @@ class App extends React.Component<AppProps, AppState> {
 
     _onOptionSelected(selectedOption) {
         this.setState({
-            selectedOption: selectedOption.length > 0 ? selectedOption[0] : null
+            selectedOption
         })
     }
 
