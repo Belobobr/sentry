@@ -6,11 +6,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env RELEASE_VERSION=\"$(git rev-parse HEAD)\" webpack --config webpack.production.js && npm run sentry_update_release",
+    "build": "chmod +x ./scripts/build.sh && ./scripts/build.sh",
     "sentry_update_release": "npm run sentry_update_commit_info && npm run sentry_update_source_map",
     "sentry_update_commit_info": "chmod +x ./scripts/send_commit_info.sh && ./scripts/send_commit_info.sh",
     "sentry_update_source_map": "chmod +x ./scripts/send_source_map.sh && ./scripts/send_source_map.sh",
-    "start": "webpack-dev-server --open --config webpack.development.js",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --open --config webpack.development.js",
     "server": "node server.js"
   },
   "author": "",

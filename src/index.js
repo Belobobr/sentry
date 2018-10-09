@@ -18,7 +18,11 @@ import BigComponent from './BigComponent';
 
 //TODO check issue. If sentry does't configured warning not shown.
 
-Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: process.env.RELEASE_VERSION });
+//TODO show warning if uncommited changes presents in release build.
+
+if (process.env.NODE_ENV === 'production') {
+    Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: process.env.RELEASE_VERSION });
+}
 
 type AppProps = {
 
@@ -54,6 +58,8 @@ class App extends React.Component<AppProps, AppState> {
         const { options, selectedOption } = this.state;
 
         const error = undefined;
+
+        error.something;
 
         return <div>
             <h1>Links</h1>

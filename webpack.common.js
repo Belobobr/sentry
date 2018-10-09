@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 console.log(process.env.RELEASE_VERSION);
+console.log(process.env.NODE_ENV);
 
 module.exports = {
     entry: './src/index.js',
