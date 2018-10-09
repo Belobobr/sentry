@@ -1,6 +1,9 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+console.log(process.env.RELEASE_VERSION);
 
 module.exports = {
     entry: './src/index.js',
@@ -9,7 +12,13 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Output Management',
             template: 'src/index.html'
-        })
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+                RELEASE_VERSION: JSON.stringify(process.env.RELEASE_VERSION)
+            },
+        }),
     ],
     module: {
         rules: [

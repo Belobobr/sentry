@@ -17,7 +17,8 @@ import BigComponent from './BigComponent';
 //const options = [{name: "1", label: '1'}, {name: "2", label: '2'}, {name: "3", label: '3'}, {name: "4", label: '4'}]
 
 //TODO check issue. If sentry does't configured warning not shown.
-Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: '12414ff194fc36dc4fa65d8d4ffdd13d1e374115' });
+
+Sentry.init({ dsn: 'https://4e5c627b9f474e2a96722252f738bd76@sentry.io/1289527', release: process.env.RELEASE_VERSION });
 
 type AppProps = {
 
@@ -174,7 +175,6 @@ function makeAndHandleRequest(query, page = 1) {
     return fetch(SEARCH_URI)
         .then((resp) => resp.json())
         .then((numbers) => {
-            debugger
             return {options: numbers, total_count: numbers.length};
         });
 }
@@ -203,10 +203,19 @@ GithubMenuItem.propTypes = {
 
 export default GithubMenuItem;
 
-const body = document.getElementById('root');
-if (body) {
-    ReactDOM.render(<ErrorBoundary><App /></ErrorBoundary>, body);
+
+const startApp = () => {
+    const body = document.getElementById('root');
+    if (body) {
+        ReactDOM.render(<ErrorBoundary><App /></ErrorBoundary>, body);
+    } else {
+        //TODO programmer error
+    }
+};
+
+if(window.cordova) {
+    document.addEventListener('deviceready', startApp, false);
 } else {
-    //TODO programmer error
+    startApp();
 }
 
