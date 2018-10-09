@@ -59,8 +59,6 @@ class App extends React.Component<AppProps, AppState> {
 
         const error = undefined;
 
-        error.makeError;
-
         return <div>
             <h1>Links</h1>
 
@@ -79,6 +77,7 @@ class App extends React.Component<AppProps, AppState> {
             <h2>Form</h2>
 
             <form>
+                <BigComponent/>
                 <div>
                     <label htmlFor="name">Fill in your name:</label>
                     <input type="text" id="name" name="name"/>
