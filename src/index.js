@@ -59,6 +59,8 @@ class App extends React.Component<AppProps, AppState> {
 
         const error = undefined;
 
+        error.makeError;
+
         return <div>
             <h1>Links</h1>
 
